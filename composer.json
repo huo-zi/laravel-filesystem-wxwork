@@ -1,0 +1,37 @@
+{
+	"name" : "huozi/laravel-filesystem-wxwork",
+	"description" : "Laravel企业微信文件存储插件",
+	"type" : "library",
+	"homepage" : "https://github.com/huozi1024/laravel-filesystem-wxwork",
+	"license" : "MIT",
+	"authors" : [{
+			"name" : "huozi",
+			"email" : "lio990527@163.com",
+			"homepage" : "https://github.com/huozi1024?tab=repositories"
+		}
+	],
+	"require-dev" : {
+		"laravel/framework" : "^5.8"
+	},
+	"require" : {
+		"overtrue/laravel-wechat" : "~5.0 || ~6.0"
+	},
+	"autoload" : {
+		"psr-4" : {
+			"Huozi\\LaravelFilesystemWxwork\\" : "src"
+		}
+	},
+	"extra" : {
+		"laravel" : {
+			"providers" : [
+				"Huozi\\LaravelFilesystemWxwork\\ServiceProvider"
+			]
+		}
+	},
+	"keywords" : [
+		"laravel",
+		"filesystem",
+		"wechat",
+		"work"
+	]
+}
