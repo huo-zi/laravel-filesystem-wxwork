@@ -3,11 +3,12 @@
 namespace Huozi\LaravelFilesystemWxwork;
 
 use League\Flysystem\Config;
+use League\Flysystem\Util;
 use League\Flysystem\Adapter\AbstractAdapter;
 use League\Flysystem\Adapter\Polyfill\NotSupportingVisibilityTrait;
 use Overtrue\LaravelWeChat\Facade;
 use EasyWeChat\Work\Application AS Work;
-use League\Flysystem\Util;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class WorkWechatAdapter extends AbstractAdapter
 {
@@ -184,22 +185,23 @@ class WorkWechatAdapter extends AbstractAdapter
 
     protected function getFileId($path)
     {
-        return $this->cache->get($this->formatPath($path));
+        $fileId = $this->cache->get($this->formatPath($path));
+        if (!$fileId) {
+            throw new FileNotFoundException($path . ' is not found');
+        }
+        return $fileId;
     }
 
     protected function getFile($path)
     {
         $fileId = $this->getFileId($path);
-        if (!$fileId) {
-            throw new \Illuminate\Contracts\Filesystem\FileNotFoundException();
-        }
         $file = $this->getWork()->media->requestRaw('cgi-bin/media/get', 'GET', [
             'query' => [
                 'media_id' => $fileId,
             ],
         ]);
         if (!$file || $file->getHeader('Error-Code')) {
-            throw new \Illuminate\Contracts\Filesystem\FileNotFoundException($file ? $file->getHeader('Error-Msg')[0] : 'get file error');
+            throw new FileNotFoundException($file ? $file->getHeader('Error-Msg')[0] : 'get file error');
         }
         return $file;
     }
