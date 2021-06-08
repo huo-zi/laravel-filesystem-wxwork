@@ -1,5 +1,4 @@
 <?php
-
 namespace Huozi\LaravelFilesystemWxwork;
 
 use League\Flysystem\Config;
@@ -7,7 +6,7 @@ use League\Flysystem\Util;
 use League\Flysystem\Adapter\AbstractAdapter;
 use League\Flysystem\Adapter\Polyfill\NotSupportingVisibilityTrait;
 use Overtrue\LaravelWeChat\Facade;
-use EasyWeChat\Work\Application AS Work;
+use EasyWeChat\Work\Application as Work;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class WorkWechatAdapter extends AbstractAdapter
@@ -15,11 +14,13 @@ class WorkWechatAdapter extends AbstractAdapter
     use NotSupportingVisibilityTrait;
 
     /**
+     *
      * @var Work
      */
     private $work;
 
     /**
+     *
      * @var \Psr\SimpleCache\CacheInterface
      */
     private $cache;
@@ -46,7 +47,7 @@ class WorkWechatAdapter extends AbstractAdapter
     public function getUrl($path)
     {
         $host = Util::normalizePath($this->config['file_host'] ?? env('APP_URL'));
-        $uri  = Util::normalizePath($this->config['file_uri'] ?? 'work/media/');
+        $uri = Util::normalizePath($this->config['file_uri'] ?? 'work/media/');
         return $host . '/' . $uri . '/' . $this->getFileId($path);
     }
 
@@ -56,8 +57,8 @@ class WorkWechatAdapter extends AbstractAdapter
             [
                 'name' => 'media',
                 'contents' => $resource,
-                'filename' => basename($path),
-            ],
+                'filename' => basename($path)
+            ]
         ];
         $response = $this->getWork()->media->request('cgi-bin/media/upload', 'POST', array_merge([
             'query' => [
@@ -147,14 +148,18 @@ class WorkWechatAdapter extends AbstractAdapter
             'type' => 'file',
             'path' => trim(str_replace('\\', '/', pathinfo($path)), '/'),
             'size' => $file->getHeader('Content-Length')[0] ?? 0,
-            'timestamp' => strtotime($file->getHeader('Date')[0]),
+            'timestamp' => strtotime($file->getHeader('Date')[0])
         ];
     }
 
     public function getMimetype($path)
     {
         $mimetype = $this->getFile($path)->getHeader('Content-Type') ?? '';
-        return ['path' => $path, 'type' => 'file', 'mimetype' => $mimetype];
+        return [
+            'path' => $path,
+            'type' => 'file',
+            'mimetype' => $mimetype
+        ];
     }
 
     public function listContents($directory = '', $recursive = false)
@@ -186,7 +191,7 @@ class WorkWechatAdapter extends AbstractAdapter
     protected function getFileId($path)
     {
         $fileId = $this->cache->get($this->formatPath($path));
-        if (!$fileId) {
+        if (! $fileId) {
             throw new FileNotFoundException($path . ' is not found');
         }
         return $fileId;
@@ -197,10 +202,10 @@ class WorkWechatAdapter extends AbstractAdapter
         $fileId = $this->getFileId($path);
         $file = $this->getWork()->media->requestRaw('cgi-bin/media/get', 'GET', [
             'query' => [
-                'media_id' => $fileId,
-            ],
+                'media_id' => $fileId
+            ]
         ]);
-        if (!$file || $file->getHeader('Error-Code')) {
+        if (! $file || $file->getHeader('Error-Code')) {
             throw new FileNotFoundException($file ? $file->getHeader('Error-Msg')[0] : 'get file error');
         }
         return $file;
