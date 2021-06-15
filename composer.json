@@ -1,5 +1,5 @@
 {
-	"name" : "huozi/laravel-filesystem-wxwork",
+	"name" : "huo-zi/laravel-filesystem-wxwork",
 	"description" : "Laravel企业微信文件存储插件",
 	"type" : "library",
 	"homepage" : "https://github.com/huozi1024/laravel-filesystem-wxwork",
