@@ -18,6 +18,6 @@ class WorkPlugin extends AbstractPlugin
 
     public function handle($work)
     {
-        $this->filesystem->getAdapter()->work($work);
+        return call_user_func([$this->filesystem->getAdapter(), 'work'], $work);
     }
 }
